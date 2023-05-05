@@ -1,6 +1,6 @@
 import React from 'react';
 import FeaturedEventsComponent from "./FeaturedEventsComponent";
-import {IEvent} from "../../pages/clients/models";
+import {IEvent} from "../../models/models";
 
 function EventList(props: any) {
     return (

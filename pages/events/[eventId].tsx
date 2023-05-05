@@ -1,23 +1,20 @@
 import React from 'react';
 import Link from "next/link";
-import {useRouter} from "next/router";
-import {getEventById} from "../../dummy_data";
-import ErrorComponent from "../../components/ErrorComponent";
+import Image from "next/image";
+import {getEvent, getFeaturedEvents} from "../../helpers/api.utils";
 
-function EventDetailsPage() {
-    const router = useRouter().query;
-    const event = getEventById(router.eventId);
+function EventDetailsPage(props: any) {
+    const {event} = props;
     if (!event) {
-        return <ErrorComponent>
-            <p className="text-2xl font-semibold">No Event Found!</p>
-        </ErrorComponent>;
+        return <p className="text-2xl font-semibold">Loading...!</p>
     }
     return (
         <section className="flex min-h-[80vh] w-1/2 lg:w-1/3 mx-auto justify-center items-center">
             <div
                 className="  bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
                 <a href="#">
-                    <img src={event.image} className="rounded-t-lg h-36 w-full object-cover" alt={event.title}/>
+                    <Image src={event.image} className="rounded-t-lg h-36 w-full object-cover" alt={event.title}
+                           width={100} height={100}/>
                 </a>
                 <div className="p-5">
                     <a href="#">
@@ -40,6 +37,30 @@ function EventDetailsPage() {
             </div>
         </section>
     );
+}
+
+export async function getStaticProps(context: any) {
+    const {params} = context;
+    const eventId = params.eventId;
+    const data = await getEvent(eventId);
+    return {
+        props: {
+            event: data.event
+        }, revalidate: 30,
+    };
+}
+
+export async function getStaticPaths() {
+    const data = await getFeaturedEvents();
+    const dynamicIds = data.map((res: any) => {
+        return {
+            params: {eventId: res.id}
+        };
+    });
+    return {
+        paths: dynamicIds, fallback: true
+    };
+    //fallback is false because we specified all possible paths
 }
 
 export default EventDetailsPage;

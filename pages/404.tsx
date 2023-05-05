@@ -1,8 +1,9 @@
 import React from 'react';
 
-export default function Index()
-{
+export default function Index() {
     return (
-        <div className='text-red-100  '> Overwriting default 404 page</div>
+        <div className="text-black flex min-h-[80vh] flex-col justify-center items-center">
+            <p>Overwriting default 404 page</p>
+        </div>
     );
 }
